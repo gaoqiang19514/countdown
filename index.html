@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        .btn{
+            background: red;
+        }
+        .btn.disable{
+            background: #ccc;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+
+    <button id="J_get_phone_code" class="btn" type="button">获取验证码</button>
+    <button id="J_get_phone_code_2" class="btn" type="button">获取验证码2</button>
+
+<script>
+
+    var lg = console.log;
+
+
+
+
+
+
+
+
+
+
+
+    function Count(options){
+        this.options = options || {};
+
+        this.startTime       = null;
+        this.currentTime     = 0;
+        this.countingState   = false;
+        this.COUNTDOWN_KEY   = this.getCurrentTime();
+
+        this.countdownSecond = this.options.countdownSecond || 60;
+        this.onStart         = this.options.onStart || function(){};
+        this.onCounting      = this.options.onCounting || function(){};
+        this.onDone          = this.options.onDone || function(){};
+    }
+
+    Count.prototype = {
+        start: function(){
+            var that = this;
+
+            if(that.countingState){return;};
+            
+            if(!that.startTime){
+                that.startTime = that.getCurrentTime();
+                localStorage.setItem(that.COUNTDOWN_KEY, that.startTime);
+            }
+
+            that.onStart();
+            that.countdown();
+            that.countingState = true;
+        },
+        countdown: function(){
+            var that = this;
+
+            var currentTime     = that.getCurrentTime();
+            var countdownSecond = that.countdownSecond;
+            var passSecond      = parseInt((currentTime - that.startTime) / 1000);
+            
+            that.onCounting(countdownSecond - passSecond);
+
+            if(passSecond >= countdownSecond){
+                that.reset();
+                that.onDone();
+            }else{
+                setTimeout(function(){
+                    that.countdown();
+                }, 1000);
+            }
+        },
+        reset: function(){
+            this.startTime     = null;
+            this.countingState = false;
+            localStorage.removeItem(this.COUNTDOWN_KEY);
+        },
+        setStartTime: function(startTime){
+            this.startTime = Number(startTime);
+        },
+        getCurrentTime: function(){
+            return new Date().getTime();
+        }
+    };
+
+
+    var cd = new Count({
+        countdownSecond: 5,
+        onStart: function(){
+            btn.setAttribute('disabled', 'disabled');
+            btn.className = 'btn disable';
+        },
+        onCounting: function(passSecond){
+            btn.innerText = passSecond + ' 秒后获取验证码';
+        },
+        onDone: function(){
+            btn.innerText = '获取验证码';
+            btn.removeAttribute('disabled');
+            btn.className = 'btn';
+        }
+    });
+
+    var cdStartTime = localStorage.getItem(cd.COUNTDOWN_KEY);
+    if(cdStartTime){
+        cd.setStartTime(cdStartTime);
+        cd.start();
+    }
+
+    var btn  = document.getElementById('J_get_phone_code');
+    btn.addEventListener('click', function(){
+        cd.start();
+    });
+
+
+
+
+
+
+    var cd2 = new Count({
+        countdownSecond: 10,
+        onStart: function(){
+            btn2.setAttribute('disabled', 'disabled');
+            btn2.className = 'btn disable';
+        },
+        onCounting: function(passSecond){
+            btn2.innerText = passSecond + ' 秒后获取验证码';
+        },
+        onDone: function(){
+            btn2.innerText = '获取验证码';
+            btn2.removeAttribute('disabled');
+            btn2.className = 'btn';
+        }
+    });
+
+    var cdStartTime2 = localStorage.getItem(cd2.COUNTDOWN_KEY);
+    if(cdStartTime2){
+        cd2.setStartTime(cdStartTime2);
+        cd2.start();
+    }
+    var btn2  = document.getElementById('J_get_phone_code_2');
+    btn2.addEventListener('click', function(){
+        cd2.start();
+    });
+
+
+
+
+
+
+</script>
+</body>
+</html>
