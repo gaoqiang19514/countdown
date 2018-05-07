@@ -5,11 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <style>
-        .btn{
-            background: red;
+        .btn {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 20px;
+            cursor: pointer;
+            letter-spacing: .2em;
+            color: #fff;
+            border: 0;
+            border-bottom: 5px solid #72a729;
+            -webkit-border-radius: 3px;
+                    border-radius: 3px;
+            background-color: #8cc938;
+            text-shadow: 2px 2px 0 rgba(150, 150, 150, .6);
         }
-        .btn.disable{
+
+        .btn.disabled {
+            border-color: #aaa;
+            outline: none;
             background: #ccc;
+            -webkit-box-shadow: inset 2px 4px 6px rgba(0, 0, 0, .1);
+            box-shadow: inset 2px 4px 6px rgba(0, 0, 0, .1);
         }
     </style>
     <title>Document</title>
@@ -22,88 +38,90 @@
 
 <script>
 
-    var lg = console.log;
-
-    var countdownIndex = 0;
-
     function Countdown(options){
         this.options = options || {};
+
+        var countdownIndex   = Countdown.countdownIndex++;
 
         this.startTime       = null;
         this.currentTime     = 0;
         this.countingState   = false;
-        this.COUNTDOWN_KEY   = 'countdown_storage_key_' + ++countdownIndex;
+        this.COUNTDOWN_KEY   = 'countdown_storage_key_' + countdownIndex;
 
         this.countdownSecond = this.options.countdownSecond || 60;
-        this.onStart         = this.options.onStart || function(){};
-        this.onCounting      = this.options.onCounting || function(){};
-        this.onDone          = this.options.onDone || function(){};
+        this.onStart         = this.options.onStart         || function(){};
+        this.onCounting      = this.options.onCounting      || function(){};
+        this.onDone          = this.options.onDone          || function(){};
 
         // 从本地存储中获取开始时间 如果为真 则说明上一轮倒计时还未结束
         // 所以这里设置时间后启动倒计时
         var startTime = localStorage.getItem(this.COUNTDOWN_KEY);
+        console.log(this.COUNTDOWN_KEY)
         if(startTime){
             this.setStartTime(startTime);
             this.start();
         }
     }
 
-    Countdown.prototype = {
-        start: function(){
-            var that = this;
+    Countdown.countdownIndex = 0;
 
-            if(that.countingState){return;};
-            
-            if(!that.startTime){
-                that.startTime = that.getCurrentTime();
-                localStorage.setItem(that.COUNTDOWN_KEY, that.startTime);
-            }
+    Countdown.prototype.start = function(){
+        var that = this;
 
-            that.onStart();
-            that.countdown();
-            that.countingState = true;
-        },
-        countdown: function(){
-            var that = this;
+        if(that.countingState){return;};
 
-            var currentTime     = that.getCurrentTime();
-            var countdownSecond = that.countdownSecond;
-            var passSecond      = parseInt((currentTime - that.startTime) / 1000);
-            
-            that.onCounting(countdownSecond - passSecond);
-
-            if(passSecond >= countdownSecond){
-                that.reset();
-                that.onDone();
-            }else{
-                setTimeout(function(){
-                    that.countdown();
-                }, 1000);
-            }
-        },
-        reset: function(){
-            this.startTime     = null;
-            this.countingState = false;
-            localStorage.removeItem(this.COUNTDOWN_KEY);
-        },
-        setStartTime: function(startTime){
-            this.startTime = Number(startTime);
-        },
-        getCurrentTime: function(){
-            return new Date().getTime();
+        if(!that.startTime){
+            that.startTime = that.getCurrentTime();
+            localStorage.setItem(that.COUNTDOWN_KEY, that.startTime);
         }
+
+        that.onStart();
+        that.countdown();
+        that.countingState = true;
     };
 
+    Countdown.prototype.countdown = function(){
+        var that = this;
+
+        var currentTime     = that.getCurrentTime();
+        var countdownSecond = that.countdownSecond;
+        var passSecond      = parseInt((currentTime - that.startTime) / 1000);
+
+        that.onCounting(countdownSecond - passSecond);
+
+        if(passSecond >= countdownSecond){
+            that.reset();
+            that.onDone();
+        }else{
+            setTimeout(function(){
+                that.countdown();
+            }, 1000);
+        }        
+    };
+
+    Countdown.prototype.reset = function(){
+        this.startTime     = null;
+        this.countingState = false;
+        localStorage.removeItem(this.COUNTDOWN_KEY);        
+    };
+
+    Countdown.prototype.setStartTime = function(startTime){
+        this.startTime = Number(startTime);
+    };
+
+    Countdown.prototype.getCurrentTime = function(){
+        return new Date().getTime();
+    };
 
     var btn1  = document.getElementById('J_get_phone_code_1');
     var cd1 = new Countdown({
         countdownSecond: 10,
         onStart: function(){
             btn1.setAttribute('disabled', 'disabled');
-            btn1.className = 'btn disable';
+            btn1.className = 'btn disabled';
         },
         onCounting: function(passSecond){
-            btn1.innerText = passSecond + ' 秒后获取验证码';
+            btn1.innerText = passSecond + '秒后获取验证码';
         },
         onDone: function(){
             btn1.innerText = '获取验证码';
@@ -120,10 +138,10 @@
         countdownSecond: 5,
         onStart: function(){
             btn2.setAttribute('disabled', 'disabled');
-            btn2.className = 'btn disable';
+            btn2.className = 'btn disabled';
         },
         onCounting: function(passSecond){
-            btn2.innerText = passSecond + ' 秒后获取验证码';
+            btn2.innerText = passSecond + '秒后获取验证码';
         },
         onDone: function(){
             btn2.innerText = '获取验证码2';
