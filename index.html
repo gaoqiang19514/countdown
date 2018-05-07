@@ -16,12 +16,15 @@
 </head>
 <body>
 
-    <button id="J_get_phone_code" class="btn" type="button">获取验证码</button>
+    <button id="J_get_phone_code_1" class="btn" type="button">获取验证码</button>
+
+    <button id="J_get_phone_code_2" class="btn" type="button">获取验证码2</button>
 
 <script>
 
     var lg = console.log;
 
+    var countdownIndex = 0;
 
     function Countdown(options){
         this.options = options || {};
@@ -29,7 +32,7 @@
         this.startTime       = null;
         this.currentTime     = 0;
         this.countingState   = false;
-        this.COUNTDOWN_KEY   = 'countdown_storage_key';
+        this.COUNTDOWN_KEY   = 'countdown_storage_key_' + ++countdownIndex;
 
         this.countdownSecond = this.options.countdownSecond || 60;
         this.onStart         = this.options.onStart || function(){};
@@ -83,34 +86,63 @@
         }
     };
 
-    var btn  = document.getElementById('J_get_phone_code');
-    btn.addEventListener('click', function(){
-        cd.start();
+    var btn1  = document.getElementById('J_get_phone_code_1');
+    btn1.addEventListener('click', function(){
+        cd1.start();
     });
 
-    var cd = new Countdown({
+    var btn2  = document.getElementById('J_get_phone_code_2');
+    btn2.addEventListener('click', function(){
+        cd2.start();
+    });
+
+    var cd1 = new Countdown({
         countdownSecond: 60,
         onStart: function(){
-            btn.setAttribute('disabled', 'disabled');
-            btn.className = 'btn disable';
+            btn1.setAttribute('disabled', 'disabled');
+            btn1.className = 'btn disable';
         },
         onCounting: function(passSecond){
-            btn.innerText = passSecond + ' 秒后获取验证码';
+            btn1.innerText = passSecond + ' 秒后获取验证码';
         },
         onDone: function(){
-            btn.innerText = '获取验证码';
-            btn.removeAttribute('disabled');
-            btn.className = 'btn';
+            btn1.innerText = '获取验证码';
+            btn1.removeAttribute('disabled');
+            btn1.className = 'btn';
         }
     });
 
-    var cdStartTime = localStorage.getItem(cd.COUNTDOWN_KEY);
+    var cd2 = new Countdown({
+        countdownSecond: 30,
+        onStart: function(){
+            btn2.setAttribute('disabled', 'disabled');
+            btn2.className = 'btn disable';
+        },
+        onCounting: function(passSecond){
+            btn2.innerText = passSecond + ' 秒后获取验证码';
+        },
+        onDone: function(){
+            btn2.innerText = '获取验证码';
+            btn2.removeAttribute('disabled');
+            btn2.className = 'btn';
+        }
+    });
 
-    if(cdStartTime){
-        cd.setStartTime(cdStartTime);
-        cd.start();
+    // cd1
+    var cd1StartTime = localStorage.getItem(cd1.COUNTDOWN_KEY);
+    lg(cd1.COUNTDOWN_KEY);
+    if(cd1StartTime){
+        cd1.setStartTime(cd1StartTime);
+        cd1.start();
     }
 
+    // cd2
+    var cd2StartTime = localStorage.getItem(cd2.COUNTDOWN_KEY);
+    lg(cd2.COUNTDOWN_KEY);
+    if(cd2StartTime){
+        cd2.setStartTime(cd2StartTime);
+        cd2.start();
+    }
 
 
 </script>

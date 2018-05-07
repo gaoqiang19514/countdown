@@ -28,7 +28,7 @@
         cd.start();
     }
 
-    var btn  = document.getElementById('J_get_phone_code');
+    var btn = document.getElementById('J_get_phone_code');
     btn.addEventListener('click', function(){
         //  启动倒计时
         cd.start();
@@ -36,5 +36,5 @@
 
 ````
 
-* 读取本地存储倒计时的代码做到Countdown对象内部
-* 每个实例生成独立的本地存储key
+ - [ ] 读取本地存储倒计时的代码做到Countdown对象内部
+ - [x] 每个实例生成独立的本地存储key
