@@ -38,3 +38,4 @@
 
  - [x] 读取本地存储倒计时的代码做到Countdown对象内部
  - [x] 每个实例生成独立的本地存储key
+ - [ ] 不同页面会产生同样的localStorage key，目前是在key的生成过程中加上url的pathname来区分
