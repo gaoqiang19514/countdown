@@ -38,6 +38,14 @@
         this.onStart         = this.options.onStart || function(){};
         this.onCounting      = this.options.onCounting || function(){};
         this.onDone          = this.options.onDone || function(){};
+
+        // 从本地存储中获取开始时间 如果为真 则说明上一轮倒计时还未结束
+        // 所以这里设置时间后启动倒计时
+        var startTime = localStorage.getItem(this.COUNTDOWN_KEY);
+        if(startTime){
+            this.setStartTime(startTime);
+            this.start();
+        }
     }
 
     Countdown.prototype = {
@@ -86,18 +94,10 @@
         }
     };
 
+
     var btn1  = document.getElementById('J_get_phone_code_1');
-    btn1.addEventListener('click', function(){
-        cd1.start();
-    });
-
-    var btn2  = document.getElementById('J_get_phone_code_2');
-    btn2.addEventListener('click', function(){
-        cd2.start();
-    });
-
     var cd1 = new Countdown({
-        countdownSecond: 60,
+        countdownSecond: 10,
         onStart: function(){
             btn1.setAttribute('disabled', 'disabled');
             btn1.className = 'btn disable';
@@ -111,9 +111,13 @@
             btn1.className = 'btn';
         }
     });
+    btn1.addEventListener('click', function(){
+        cd1.start();
+    });
 
+    var btn2  = document.getElementById('J_get_phone_code_2');
     var cd2 = new Countdown({
-        countdownSecond: 30,
+        countdownSecond: 5,
         onStart: function(){
             btn2.setAttribute('disabled', 'disabled');
             btn2.className = 'btn disable';
@@ -122,27 +126,14 @@
             btn2.innerText = passSecond + ' 秒后获取验证码';
         },
         onDone: function(){
-            btn2.innerText = '获取验证码';
+            btn2.innerText = '获取验证码2';
             btn2.removeAttribute('disabled');
             btn2.className = 'btn';
         }
     });
-
-    // cd1
-    var cd1StartTime = localStorage.getItem(cd1.COUNTDOWN_KEY);
-    lg(cd1.COUNTDOWN_KEY);
-    if(cd1StartTime){
-        cd1.setStartTime(cd1StartTime);
-        cd1.start();
-    }
-
-    // cd2
-    var cd2StartTime = localStorage.getItem(cd2.COUNTDOWN_KEY);
-    lg(cd2.COUNTDOWN_KEY);
-    if(cd2StartTime){
-        cd2.setStartTime(cd2StartTime);
+    btn2.addEventListener('click', function(){
         cd2.start();
-    }
+    });
 
 
 </script>
