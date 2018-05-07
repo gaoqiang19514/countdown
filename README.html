@@ -1,0 +1,46 @@
+<html>
+      <head>
+        <meta charset="UTF-8">
+        <title>README.md</title>
+      </head>
+      <body>
+        <h1 id="countdown">countdown</h1>
+<p>用来获取验证码的倒计时组件 保存实时秒数到本地存储</p>
+<pre><code>    var cd = new Countdown({
+        countdownSecond: 5,
+        onStart: function(){
+            btn.setAttribute(&#39;disabled&#39;, &#39;disabled&#39;);
+            btn.className = &#39;btn disable&#39;;
+        },
+        onCounting: function(passSecond){
+            btn.innerText = passSecond + &#39; 秒后获取验证码&#39;;
+        },
+        onDone: function(){
+            btn.innerText = &#39;获取验证码&#39;;
+            btn.removeAttribute(&#39;disabled&#39;);
+            btn.className = &#39;btn&#39;;
+        }
+    });
+
+    //  获取当前倒计时的开始时间
+    var cdStartTime = localStorage.getItem(cd.COUNTDOWN_KEY);
+
+    //  如果能够读取到开始时间，说明当前正在倒计时，我们就用这个时间设置一下，然后启动倒计时
+    if(cdStartTime){
+        cd.setStartTime(cdStartTime);
+        cd.start();
+    }
+
+    var btn  = document.getElementById(&#39;J_get_phone_code&#39;);
+    btn.addEventListener(&#39;click&#39;, function(){
+        //  启动倒计时
+        cd.start();
+    });
+
+</code></pre><ul>
+<li>读取本地存储倒计时的代码做到Countdown对象内部</li>
+<li>每个实例生成独立的本地存储key</li>
+</ul>
+
+      </body>
+    </html>
