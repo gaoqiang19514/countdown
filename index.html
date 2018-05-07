@@ -40,14 +40,15 @@
 
     function Countdown(options){
         this.options = options || {};
-
+        
+        var pathname         = window.location.pathname;
         var countdownIndex   = Countdown.countdownIndex++;
-
+        
         this.startTime       = null;
         this.currentTime     = 0;
         this.countingState   = false;
-        this.COUNTDOWN_KEY   = 'countdown_storage_key_' + countdownIndex;
-
+        this.COUNTDOWN_KEY   = 'countdown_storage_key_' + countdownIndex + '_' + pathname;
+        
         this.countdownSecond = this.options.countdownSecond || 60;
         this.onStart         = this.options.onStart         || function(){};
         this.onCounting      = this.options.onCounting      || function(){};
